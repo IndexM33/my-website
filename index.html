@@ -19,12 +19,12 @@
   </div>
 
   <script>
-    const MY_AUTH0_DOMAIN = "dev-8jm6qtzob326vgcm.us.auth0.com";
-    const MY_AUTH0_CLIENT_ID = "TLwMuCofoZGO2a2r2VJGHnthpdzHfQBE";
+    const SAFE_DOMAIN = "dev-8jm6qtzob326vgcm.us.auth0.com";
+    const SAFE_CLIENT_ID = "TLwMuCofoZGO2a2r2VJGHnthpdzHfQBE";
 
     const auth0ClientPromise = createAuth0Client({
-      domain: MY_AUTH0_DOMAIN,
-      client_id: MY_AUTH0_CLIENT_ID,
+      domain: SAFE_DOMAIN,
+      client_id: SAFE_CLIENT_ID,
       redirect_uri: window.location.origin
     });
 
@@ -53,4 +53,3 @@
   </script>
 </body>
 </html>
-
