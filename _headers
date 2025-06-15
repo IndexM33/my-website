@@ -1,2 +1,2 @@
-/*
-  Basic-Auth: matt letmein
+/protected/*
+  Basic-Auth: user1:password1 user2:password2
