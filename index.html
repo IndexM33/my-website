@@ -3,11 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My First GitHub Page</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>My Auth0 Protected Site</title>
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
 </head>
 <body>
-  <h1>Welcome to My Website</h1>
-  <p>This is my first site hosted with GitHub Pages. 🎉</p>
+  <h1>Welcome to My Protected Site</h1>
+
+  <div id="status">Checking login status...</div>
+
+  <button id="login">Log In</button>
+  <button id="logout" style="display: none;">Log Out</button>
+
+  <div id="private-content" style="display: none;">
+    <p>This content is only visible when logged in. 🎉</p>
+  </div>
+
+  <script>
+    const auth0ClientPromise = createAuth0Client({
+      domain: "dev-8jm6qtzob326vgcm.us.auth0.com",
+      client_id: "TLwMuCofoZGO2a2r2VJGHnthpdzHfQBE",
+      redirect_uri: window.location.origin
+    });
+
+    auth0ClientPromise.then(async auth0 => {
+      if (window.location.search.includes("code=") && window.location.search.includes("state=")) {
+        await auth0.handleRedirectCallback();
+        window.history.replaceState({}, document.title, "/");
+      }
+
+      const isAuthenticated = await auth0.isAuthenticated();
+
+      if (isAuthenticated) {
+        document.getElementById("status").innerText = "Logged in ✅";
+        document.getElementById("login").style.display = "none";
+        document.getElementById("logout").style.display = "inline-block";
+        document.getElementById("private-content").style.display = "block";
+      } else {
+        document.getElementById("status").innerText = "Not logged in ❌";
+        document.getElementById("login").style.display = "inline-block";
+        document.getElementById("logout").style.display = "none";
+      }
+
+      document.getElementById("login").addEventListener("click", () => auth0.loginWithRedirect());
+      document.getElementById("logout").addEventListener("click", () => auth0.logout({ returnTo: window.location.origin }));
+    });
+  </script>
 </body>
 </html>
