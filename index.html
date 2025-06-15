@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Auth0 Protected Site</title>
+  <title>Secure Login Site</title>
   <script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
 </head>
 <body>
@@ -19,12 +19,12 @@
   </div>
 
   <script>
-    const SAFE_DOMAIN = "dev-8jm6qtzob326vgcm.us.auth0.com";
-    const SAFE_CLIENT_ID = "TLwMuCofoZGO2a2r2VJGHnthpdzHfQBE";
+    const loginDomain = "dev-8jm6qtzob326vgcm.us.auth0.com";
+    const clientKey = "TLwMuCofoZGO2a2r2VJGHnthpdzHfQBE";
 
     const auth0ClientPromise = createAuth0Client({
-      domain: SAFE_DOMAIN,
-      client_id: SAFE_CLIENT_ID,
+      domain: loginDomain,
+      client_id: clientKey,
       redirect_uri: window.location.origin
     });
 
