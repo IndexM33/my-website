@@ -1,55 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Secure Login Site</title>
-  <script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PAT Testing Data Collection</title>
+  <link rel="stylesheet" href="style.css">
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script crossorigin src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 </head>
 <body>
-  <h1>Welcome to My Protected Site</h1>
+  <div id="root"></div>
 
-  <div id="status">Checking login status...</div>
+  <script type="text/babel">
+    function App() {
+      const [info, setInfo] = React.useState({
+        name: '',
+        address: '',
+        companyName: '',
+        companyAddress: '',
+        serialNumber: ''
+      });
+      const [items, setItems] = React.useState([{ description: '', result: '' }]);
+      const [submitted, setSubmitted] = React.useState(null);
 
-  <button id="login">Log In</button>
-  <button id="logout" style="display: none;">Log Out</button>
+      const handleInfoChange = (e) => {
+        const { name, value } = e.target;
+        setInfo(prev => ({ ...prev, [name]: value }));
+      };
 
-  <div id="private-content" style="display: none;">
-    <p>This content is only visible when logged in. 🎉</p>
-  </div>
+      const handleItemChange = (index, field, value) => {
+        const updated = items.map((item, i) =>
+          i === index ? { ...item, [field]: value } : item
+        );
+        setItems(updated);
+      };
 
-  <script>
-    const loginDomain = "dev-8jm6qtzob326vgcm.us.auth0.com";
-    const clientKey = "TLwMuCofoZGO2a2r2VJGHnthpdzHfQBE";
+      const addItem = () => {
+        setItems([...items, { description: '', result: '' }]);
+      };
 
-    const auth0ClientPromise = createAuth0Client({
-      domain: loginDomain,
-      client_id: clientKey,
-      redirect_uri: window.location.origin
-    });
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        const data = { ...info, items };
+        setSubmitted(data);
+        const saved = JSON.parse(localStorage.getItem('patData') || '[]');
+        saved.push(data);
+        localStorage.setItem('patData', JSON.stringify(saved));
+      };
 
-    auth0ClientPromise.then(async auth0 => {
-      if (window.location.search.includes("code=") && window.location.search.includes("state=")) {
-        await auth0.handleRedirectCallback();
-        window.history.replaceState({}, document.title, "/");
-      }
+      return (
+        <div className="container">
+          <h1>PAT Testing Form</h1>
+          <form onSubmit={handleSubmit}>
+            <label>Name
+              <input name="name" value={info.name} onChange={handleInfoChange} required />
+            </label>
+            <label>Address
+              <input name="address" value={info.address} onChange={handleInfoChange} required />
+            </label>
+            <label>Company Name
+              <input name="companyName" value={info.companyName} onChange={handleInfoChange} />
+            </label>
+            <label>Company Address
+              <input name="companyAddress" value={info.companyAddress} onChange={handleInfoChange} />
+            </label>
+            <label>Serial Number
+              <input name="serialNumber" value={info.serialNumber} onChange={handleInfoChange} />
+            </label>
 
-      const isAuthenticated = await auth0.isAuthenticated();
+            {items.map((item, index) => (
+              <div className="item-group" key={index}>
+                <label>Item Description
+                  <input
+                    value={item.description}
+                    onChange={(e) => handleItemChange(index, 'description', e.target.value)}
+                    required
+                  />
+                </label>
+                <label>Result
+                  <input
+                    value={item.result}
+                    onChange={(e) => handleItemChange(index, 'result', e.target.value)}
+                    required
+                  />
+                </label>
+              </div>
+            ))}
+            <button type="button" onClick={addItem}>Add Item</button>
+            <button type="submit">Submit</button>
+          </form>
 
-      if (isAuthenticated) {
-        document.getElementById("status").innerText = "Logged in ✅";
-        document.getElementById("login").style.display = "none";
-        document.getElementById("logout").style.display = "inline-block";
-        document.getElementById("private-content").style.display = "block";
-      } else {
-        document.getElementById("status").innerText = "Not logged in ❌";
-        document.getElementById("login").style.display = "inline-block";
-        document.getElementById("logout").style.display = "none";
-      }
+          {submitted && (
+            <div className="result">
+              <h2>Data Saved</h2>
+              <pre>{JSON.stringify(submitted, null, 2)}</pre>
+            </div>
+          )}
+        </div>
+      );
+    }
 
-      document.getElementById("login").addEventListener("click", () => auth0.loginWithRedirect());
-      document.getElementById("logout").addEventListener("click", () => auth0.logout({ returnTo: window.location.origin }));
-    });
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
   </script>
 </body>
 </html>
