@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chess Opening Trainer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Offline repertoire checker</p>
+        <h1>Chess Opening Trainer</h1>
+        <p class="lede">Upload or paste your opening lines, then practise moves on the board. The trainer spots when your move stops following the uploaded repertoire.</p>
+      </div>
+      <div class="hero-card">
+        <span id="lineCount">0</span>
+        <small>lines loaded</small>
+      </div>
+    </section>
+
+    <section class="grid-layout">
+      <aside class="panel setup-panel">
+        <h2>1. Add your openings</h2>
+        <p class="hint">Works with one line per row, or a PGN file. Example: <strong>1. e4 e5 2. Nf3 Nc6 3. Bb5</strong></p>
+
+        <label class="file-drop" for="repertoireFile">
+          <input id="repertoireFile" type="file" accept=".pgn,.txt,.text" />
+          <span>Choose a PGN or text file</span>
+          <small id="fileName">No file chosen</small>
+        </label>
+
+        <label for="repertoireText" class="label">Or paste opening lines</label>
+        <textarea id="repertoireText" spellcheck="false" placeholder="Italian Game: 1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5&#10;Ruy Lopez: 1. e4 e5 2. Nf3 Nc6 3. Bb5 a6&#10;Sicilian: 1. e4 c5 2. Nf3 d6 3. d4 cxd4"></textarea>
+
+        <div class="button-row">
+          <button id="loadBtn" class="primary">Load repertoire</button>
+          <button id="sampleBtn" type="button">Use sample</button>
+        </div>
+
+        <div class="options">
+          <div>
+            <label for="sideSelect" class="label">Practise as</label>
+            <select id="sideSelect">
+              <option value="white">White</option>
+              <option value="black">Black</option>
+              <option value="both">Both sides</option>
+            </select>
+          </div>
+          <div>
+            <label for="replySelect" class="label">Opponent replies</label>
+            <select id="replySelect">
+              <option value="random">Random allowed branch</option>
+              <option value="first">First uploaded line</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button id="restartBtn">Restart practice</button>
+          <button id="flipBtn">Flip board</button>
+        </div>
+
+        <details>
+          <summary>Upload format help</summary>
+          <p>Best format is one opening line per row. You can include names before a colon.</p>
+          <pre>Queen's Gambit: 1. d4 d5 2. c4 e6 3. Nc3 Nf6</pre>
+          <p>PGN files are also accepted. Comments, results and move numbers are ignored.</p>
+        </details>
+      </aside>
+
+      <section class="board-zone">
+        <div class="status-card" id="statusCard">
+          <div>
+            <p class="status-label">Status</p>
+            <h2 id="statusTitle">Load a repertoire to start</h2>
+            <p id="statusText">Paste a few lines or upload a PGN file. Then choose a side and practise.</p>
+          </div>
+          <button id="undoBtn" title="Go back one move">Undo</button>
+        </div>
+
+        <div class="board-wrap">
+          <div id="board" class="board" aria-label="Chess board"></div>
+          <div class="coordinates files" id="fileCoords"></div>
+          <div class="coordinates ranks" id="rankCoords"></div>
+        </div>
+      </section>
+
+      <aside class="panel practice-panel">
+        <h2>2. Practise</h2>
+
+        <div class="info-box">
+          <p class="status-label">Expected here</p>
+          <div id="expectedMoves" class="move-pills">No repertoire loaded</div>
+        </div>
+
+        <div class="info-box">
+          <p class="status-label">Your line</p>
+          <ol id="moveList" class="move-list"></ol>
+        </div>
+
+        <div class="info-box compact">
+          <p class="status-label">Progress</p>
+          <div class="meter"><span id="progressBar"></span></div>
+          <p id="progressText">0 moves followed</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
